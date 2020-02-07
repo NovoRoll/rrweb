@@ -14,6 +14,7 @@ import {
   recordOptions,
   IncrementalSource,
   listenerHandler,
+  StyleSheetInteractions,
 } from '../types';
 
 function wrapEvent(e: event): eventWithTime {
@@ -100,6 +101,25 @@ function record(options: recordOptions = {}): listenerHandler | undefined {
     );
   }
 
+  function patchingCSSStyleSheet(){
+    const insertRule = CSSStyleSheet.prototype.insertRule;
+    CSSStyleSheet.prototype.insertRule = function (rule: string, index?: number) {
+      wrappedEmit(
+        wrapEvent({
+          type: EventType.IncrementalSnapshot,
+          data: {
+            source: IncrementalSource.StyleSheetInteraction,
+            type: StyleSheetInteractions.InsertRule,
+            rule,
+            index,
+          },
+        }),
+      );
+      return insertRule.apply(this, arguments);
+  }
+
+  }
+
   try {
     const handlers: listenerHandler[] = [];
     handlers.push(
@@ -113,6 +133,7 @@ function record(options: recordOptions = {}): listenerHandler | undefined {
       }),
     );
     const init = () => {
+      patchingCSSStyleSheet();
       takeFullSnapshot();
 
       handlers.push(

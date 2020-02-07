@@ -61,6 +61,7 @@ export enum IncrementalSource {
   Input,
   TouchMove,
   MediaInteraction,
+  StyleSheetInteraction,
 }
 
 export type mutationData = {
@@ -93,6 +94,10 @@ export type mediaInteractionData = {
   source: IncrementalSource.MediaInteraction;
 } & mediaInteractionParam;
 
+export type styleSheetInteractionData = {
+  source: IncrementalSource.StyleSheetInteraction;
+} & styleSheetInteractionParams;
+
 export type incrementalData =
   | mutationData
   | mousemoveData
@@ -100,7 +105,8 @@ export type incrementalData =
   | scrollData
   | viewportResizeData
   | inputData
-  | mediaInteractionData;
+  | mediaInteractionData
+  | styleSheetInteractionData;
 
 export type event =
   | domContentLoadedEvent
@@ -261,6 +267,17 @@ export const enum MediaInteractions {
 export type mediaInteractionParam = {
   type: MediaInteractions;
   id: number;
+};
+
+export const enum StyleSheetInteractions {
+  InsertRule,
+//  DeleteRule,
+}
+
+export type styleSheetInteractionParams = {
+  type: StyleSheetInteractions;
+  rule: string;
+  index?: number;
 };
 
 export type mediaInteractionCallback = (p: mediaInteractionParam) => void;
