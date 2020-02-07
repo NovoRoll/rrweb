@@ -608,6 +608,15 @@ export class Replayer {
         }
         break;
       }
+      case IncrementalSource.StyleSheetInteraction: {
+        const { head } = this.iframe.contentDocument!;
+        const stylesEls = head.getElementsByTagName('style');
+        const styleSheet = stylesEls[stylesEls.length - 1].sheet as CSSStyleSheet;
+        if (styleSheet) {
+          styleSheet.insertRule(d.rule, d.index);
+        }
+        break;
+      }
       default:
     }
   }
