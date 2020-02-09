@@ -612,8 +612,9 @@ export class Replayer {
         const { head } = this.iframe.contentDocument!;
         const stylesEls = head.getElementsByTagName('style');
         const styleSheet = stylesEls[stylesEls.length - 1].sheet as CSSStyleSheet;
+        console.log("styleSheet", styleSheet);
         if (styleSheet) {
-          styleSheet.insertRule(d.rule, d.index);
+          setTimeout(() => styleSheet.insertRule(d.rule), 100);
         }
         break;
       }
